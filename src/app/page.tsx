@@ -1,103 +1,124 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
 
-export default function Home() {
+export default function Page() {
+  const [transcript, setTranscript] = useState("");
+  const [suggestions, setSuggestions] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+
+  // TBD: aggiungi punto 3 per l'information extraction
+  const suggestion_prompt = `
+  Agisci come un assistente cognitivo per consulenti aziendali durante colloqui con clienti.
+
+  Leggi il seguente estratto della conversazione e:
+  1. Identifica i concetti, parole chiave o pattern rilevanti (es. problemi, bisogni, riferimenti a tool o competitor).
+  2. Per ciascuno, genera una breve *risposta intelligente* o *spunto operativo*.
+    - Se viene nominato un tool o un competitor → confrontalo brevemente con alternative o suggerisci insight utili.
+    - Se emerge un bisogno o problema → proponi soluzioni pratiche.
+    - Se emergono idee vaghe → trasformale in azioni concrete o nuove direzioni.
+    - Se la conversazione è lunga → chiudi con un micro-riassunto.
+
+  Rispondi in linguaggio naturale, come un collega che interviene con consigli concreti.
+
+  Conversazione:
+  {chunk}
+
+  Risposte intelligenti:
+  `;
+
+  const transcript_mock = `
+  Consulente: Buongiorno, grazie per averci contattato. Ci parli un po’ della vostra esigenza.
+  Cliente: Buongiorno, siamo un’azienda che si occupa di logistica e vogliamo digitalizzare la gestione dei magazzini. 
+  Consulente: Ottimo. Al momento usate un software gestionale interno o Excel?
+  Cliente: Per ora Excel, ma stiamo avendo problemi con gli errori di aggiornamento e la mancanza di visibilità in tempo reale.
+  Consulente: Capisco. L’obiettivo principale quindi sarebbe migliorare il tracciamento e ridurre gli errori operativi?
+  Cliente: Esatto, ma vogliamo anche avere report automatici sulle giacenze e sui tempi di consegna.
+  Consulente: Perfetto. Potremmo proporre una soluzione basata su cloud, con dashboard integrate e accesso tramite tablet.
+  Cliente: Interessante. Ci sono tempi o costi indicativi per un progetto del genere?
+  Consulente: In media parliamo di 8-10 settimane di sviluppo. I costi dipendono dalle integrazioni con i vostri sistemi esistenti, ma possiamo partire da una fase di analisi.
+  Cliente: Ottimo, ci piacerebbe ricevere una proposta dettagliata e magari un preventivo entro la prossima settimana.
+  Consulente: Assolutamente. Vi invierò un documento con il piano di lavoro e le tempistiche entro venerdì.
+  Cliente: Perfetto, grazie mille.
+  Consulente: Grazie a voi, buona giornata.
+  `;
+
+  const username = "challengecrif"
+
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleSendToAI = async () => {
+    setLoading(true);
+    setSuggestions("");
+
+    setTranscript(transcript_mock);
+
+    try {
+      const res = await fetch("https://" + username + ".app.n8n.cloud/webhook-test/audio-input", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: suggestion_prompt,
+          conversation: transcript_mock
+        }),
+      });
+
+      //if (!res.ok) throw new Error("Errore durante la chiamata all'AI");
+
+      const data = await res.json();
+      //setSuggestions(data.suggestions || "Nessuna risposta dall'AI");
+      setSuggestions(data.message.content || "Nessuna risposta dall'AI");
+    } catch (err) {
+      //console.error(err);
+      setSuggestions("❌ Errore: impossibile contattare l'agente AI.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <main className="grid grid-cols-2 gap-4 p-6 min-h-screen bg-gray-100">
+      {/* Colonna sinistra */}
+      <div className="flex flex-col border rounded-xl bg-white p-4 shadow">
+        <h2 className="text-xl font-semibold mb-2">🗣️ Conversazione in corso</h2>
+        <textarea
+          className="flex-1 border p-2 rounded resize-none"
+          placeholder="Scrivi o incolla la conversazione..."
+          value={transcript}
+          onChange={(e) => setTranscript(e.target.value)}
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={handleSendToAI}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Salva parziale
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
           >
-            Read our docs
-          </a>
+            Termina
+          </button>
+          {saved && <span className="text-green-600 self-center">Salvato!</span>}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      {/* Colonna destra */}
+      <div className="flex flex-col border rounded-xl bg-white p-4 shadow">
+        <h2 className="text-xl font-semibold mb-2">💡 Suggerimenti AI</h2>
+        {loading ? (
+          <p className="text-gray-500">⏳ L'agente AI sta elaborando...</p>
+        ) : (
+          <pre className="flex-1 whitespace-pre-wrap p-3 bg-gray-50 rounded overflow-auto">
+            {suggestions || "Nessun suggerimento ancora..."}
+          </pre>
+        )}
+      </div>
+    </main>
   );
 }
