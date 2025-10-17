@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# boom-webapp
-Repository for web app developed during BOOM Innovation Challenge
+# BOOM Web App
 =======
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
