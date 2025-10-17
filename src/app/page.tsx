@@ -1,14 +1,15 @@
 "use client";
 import { useState } from "react";
 
+import ReactMarkdown from "react-markdown";
+
 export default function Page() {
   const [transcript, setTranscript] = useState("");
   const [suggestions, setSuggestions] = useState("");
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
 
-
-  // TBD: aggiungi punto 3 per l'information extraction
+  // TBD: aggiungi info extraction
   const suggestion_prompt = `
   Agisci come un assistente cognitivo per consulenti aziendali durante colloqui con clienti.
 
@@ -114,11 +115,19 @@ export default function Page() {
         {loading ? (
           <p className="text-gray-500">⏳ L'agente AI sta elaborando...</p>
         ) : (
-          <pre className="flex-1 whitespace-pre-wrap p-3 bg-gray-50 rounded overflow-auto">
-            {suggestions || "Nessun suggerimento ancora..."}
-          </pre>
+          <div className="flex-1 p-3 bg-gray-50 rounded overflow-auto prose prose-sm max-w-none">
+            <ReactMarkdown>
+              {suggestions || "Nessun suggerimento ancora..."}
+            </ReactMarkdown>
+          </div>
         )}
       </div>
     </main>
   );
 }
+
+/*
+          <pre className="flex-1 whitespace-pre-wrap p-3 bg-gray-50 rounded overflow-auto">
+            {suggestions || "Nessun suggerimento ancora..."}
+          </pre>
+*/
