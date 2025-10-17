@@ -1,0 +1,31 @@
+import { Settings, Bell, Award as IdCard } from "lucide-react"
+
+export function Header() {
+  return (
+    <header className="flex h-[120px] items-center justify-end gap-6 bg-white px-8">
+      <button
+        className="flex h-12 w-12 items-center justify-center rounded-full text-[#0f1f3d] transition-colors hover:bg-gray-100"
+        aria-label="Settings"
+      >
+        <Settings className="h-6 w-6" />
+      </button>
+
+      <button
+        className="relative flex h-12 w-12 items-center justify-center rounded-full text-[#0f1f3d] transition-colors hover:bg-gray-100"
+        aria-label="Notifications"
+      >
+        <Bell className="h-6 w-6" />
+        <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
+          2
+        </span>
+      </button>
+
+      <button
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#0f1f3d] text-white transition-opacity hover:opacity-90"
+        aria-label="User profile"
+      >
+        <IdCard className="h-7 w-7" />
+      </button>
+    </header>
+  )
+}
