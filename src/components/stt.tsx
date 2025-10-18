@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 export default function STT() {
   const [transcript, setTranscript] = useState("");
   const [listening, setListening] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  //const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
+  /*
   useEffect(() => {
     // Compatibilità Chrome/Safari
     const SpeechRecognition =
@@ -41,12 +42,13 @@ export default function STT() {
       setListening(true);
     }
   };
+  */
 
   return (
     <div className="p-4 bg-gray-100 rounded-xl shadow-md text-center">
       <h2 className="text-xl font-semibold mb-2">🎙️ Speech Recognition</h2>
       <button
-        onClick={toggleListening}
+        //onClick={toggleListening}
         className={`px-4 py-2 rounded ${
           listening ? "bg-red-500" : "bg-green-500"
         } text-white`}
