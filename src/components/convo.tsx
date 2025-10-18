@@ -99,7 +99,7 @@ export default function Convo() {
     setSuggestions("")
 
     const wordQueryPrompt = `
-    Fornisci informazioni dettagliate e contestuali sulla seguente parola/concetto nel contesto di consulenza aziendale: "${selectedWord}"
+    In base alla conversazione avvenuta fino ad ora, fornisci informazioni dettagliate e riassuntive (in massimo 6 righe) sulla seguente parola/concetto nel contesto di consulenza aziendale: "${selectedWord}"
     
     Includi:
     - Definizione e significato
