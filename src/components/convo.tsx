@@ -138,7 +138,7 @@ export default function Convo() {
     recognition.continuous = true
     recognition.interimResults = true
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: any) => {
       let interimTranscript = ""
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         const transcriptPiece = event.results[i][0].transcript
@@ -150,7 +150,7 @@ export default function Convo() {
       }
     }
 
-    recognition.onerror = (event) => {
+    recognition.onerror = (event: any) => {
       console.error("Errore riconoscimento:", event.error)
       setIsRecording(false)
     }
