@@ -9,7 +9,7 @@ export default function Convo() {
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isRecording, setIsRecording] = useState(false) // 👈 per gestire stato STT
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const recognitionRef = useRef<typeof SpeechRecognition | null>(null)
 
   // Modifiche Giovanni
   const [selectedWord, setSelectedWord] = useState("")
