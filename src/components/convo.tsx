@@ -1,51 +1,32 @@
 "use client"
-import { useState } from "react"
-
+import { useState, useRef } from "react"
 import ReactMarkdown from "react-markdown"
 
 export default function Convo() {
   const [transcript, setTranscript] = useState("")
+  const [lastSentTranscript, setLastSentTranscript] = useState("") // 👈 nuovo stato
   const [suggestions, setSuggestions] = useState("")
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isRecording, setIsRecording] = useState(false) // 👈 per gestire stato STT
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
+
   // Modifiche Giovanni
   const [selectedWord, setSelectedWord] = useState("")
   const [showWordButton, setShowWordButton] = useState(false)
 
-  // TBD: aggiungi info extraction
   const suggestion_prompt = `
   Agisci come un assistente cognitivo per consulenti aziendali durante colloqui con clienti.
 
   Leggi il seguente estratto della conversazione e:
-  1. Identifica i concetti, parole chiave o pattern rilevanti (es. problemi, bisogni, riferimenti a tool o competitor).
+  1. Identifica concetti, parole chiave o pattern rilevanti (es. problemi, bisogni, riferimenti a tool o competitor).
   2. Per ciascuno, genera una breve *risposta intelligente* o *spunto operativo*.
-    - Se viene nominato un tool o un competitor → confrontalo brevemente con alternative o suggerisci insight utili.
-    - Se emerge un bisogno o problema → proponi soluzioni pratiche.
-    - Se emergono idee vaghe → trasformale in azioni concrete o nuove direzioni.
-    - Se la conversazione è lunga → chiudi con un micro-riassunto.
-
-  Rispondi in linguaggio naturale, come un collega che interviene con consigli concreti.
+  3. Chiudi con un micro-riassunto se la conversazione è lunga.
 
   Conversazione:
   {chunk}
 
   Risposte intelligenti:
-  `
-
-  const transcript_mock = `
-  Consulente: Buongiorno, grazie per averci contattato. Ci parli un po' della vostra esigenza.
-  Cliente: Buongiorno, siamo un'azienda che si occupa di logistica e vogliamo digitalizzare la gestione dei magazzini. 
-  Consulente: Ottimo. Al momento usate un software gestionale interno o Excel?
-  Cliente: Per ora Excel, ma stiamo avendo problemi con gli errori di aggiornamento e la mancanza di visibilità in tempo reale.
-  Consulente: Capisco. L'obiettivo principale quindi sarebbe migliorare il tracciamento e ridurre gli errori operativi?
-  Cliente: Esatto, ma vogliamo anche avere report automatici sulle giacenze e sui tempi di consegna.
-  Consulente: Perfetto. Potremmo proporre una soluzione basata su cloud, con dashboard integrate e accesso tramite tablet.
-  Cliente: Interessante. Ci sono tempi o costi indicativi per un progetto del genere?
-  Consulente: In media parliamo di 8-10 settimane di sviluppo. I costi dipendono dalle integrazioni con i vostri sistemi esistenti, ma possiamo partire da una fase di analisi.
-  Cliente: Ottimo, ci piacerebbe ricevere una proposta dettagliata e magari un preventivo entro la prossima settimana.
-  Consulente: Assolutamente. Vi invierò un documento con il piano di lavoro e le tempistiche entro venerdì.
-  Cliente: Perfetto, grazie mille.
-  Consulente: Grazie a voi, buona giornata.
   `
 
   const username = "challengecrif"
@@ -55,11 +36,18 @@ export default function Convo() {
     setTimeout(() => setSaved(false), 2000)
   }
 
+  // ✅ SOLO le parti nuove della conversazione
   const handleSendToAI = async () => {
     setLoading(true)
     setSuggestions("")
 
-    setTranscript(transcript_mock)
+    // prendi solo la parte nuova
+    const newChunk = transcript.replace(lastSentTranscript, "").trim()
+    if (!newChunk) {
+      setSuggestions("Nessuna nuova parte da inviare.")
+      setLoading(false)
+      return
+    }
 
     try {
       const res = await fetch("https://" + username + ".app.n8n.cloud/webhook-test/audio-input", {
@@ -67,13 +55,15 @@ export default function Convo() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: suggestion_prompt,
-          conversation: transcript_mock,
+          conversation: newChunk,
         }),
       })
 
       const data = await res.json()
       setSuggestions(data.message.content || "Nessuna risposta dall'AI")
+      setLastSentTranscript(transcript) // 👈 aggiorna l’ultimo punto inviato
     } catch (err) {
+      console.error(err)
       setSuggestions("Errore: impossibile contattare l'agente AI.")
     } finally {
       setLoading(false)
@@ -91,22 +81,19 @@ export default function Convo() {
     }
   }
 
-  // Funzione modificata Giovanni
   const handleQueryWord = async () => {
     if (!selectedWord) return
-    
+
     setLoading(true)
     setSuggestions("")
 
     const wordQueryPrompt = `
-    In base alla conversazione avvenuta fino ad ora, fornisci informazioni dettagliate e riassuntive (in massimo 6 righe) sulla seguente parola/concetto nel contesto di consulenza aziendale: "${selectedWord}"
-    
-    Includi:
-    - Definizione e significato
+    In base alla conversazione finora, fornisci informazioni (max 6 righe) su "${selectedWord}" nel contesto consulenziale:
+    - Definizione
     - Applicazioni pratiche
     - Tool o tecnologie correlate
     - Suggerimenti operativi
-    
+
     Conversazione di contesto:
     ${transcript}
     `
@@ -131,21 +118,67 @@ export default function Convo() {
     }
   }
 
+  // 🎙️ FUNZIONE: Speech-to-Text tramite Web Speech API
+  const toggleRecording = () => {
+    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      alert("API SpeechRecognition non supportata su questo browser.")
+      return
+    }
+
+    if (isRecording) {
+      recognitionRef.current?.stop()
+      setIsRecording(false)
+      return
+    }
+
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    const recognition = new SpeechRecognition()
+    recognition.lang = "it-IT"
+    recognition.continuous = true
+    recognition.interimResults = true
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let interimTranscript = ""
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        const transcriptPiece = event.results[i][0].transcript
+        if (event.results[i].isFinal) {
+          setTranscript((prev) => prev + " " + transcriptPiece.trim())
+        } else {
+          interimTranscript += transcriptPiece
+        }
+      }
+    }
+
+    recognition.onerror = (event) => {
+      console.error("Errore riconoscimento:", event.error)
+      setIsRecording(false)
+    }
+
+    recognition.onend = () => {
+      setIsRecording(false)
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
+    setIsRecording(true)
+  }
+
   return (
     <div className="grid grid-cols-2 gap-6 h-full">
-      {/* Colonna sinistra */}
+      {/* COLONNA SINISTRA */}
       <div className="flex flex-col rounded-lg bg-white p-6 shadow-sm border border-gray-200">
         <h2 className="text-lg font-semibold mb-4 text-[#0f1f3d]">Conversazione in corso</h2>
-        {/* textarea modificata Giovanni */}
+
         <textarea
           className="flex-1 border border-gray-300 p-3 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#0f1f3d] focus:border-transparent text-sm"
-          placeholder="Scrivi o incolla la conversazione..."
+          placeholder="Scrivi o registra la conversazione..."
           value={transcript}
           onChange={(e) => setTranscript(e.target.value)}
           onMouseUp={handleWordSelection}
           onKeyUp={handleWordSelection}
         />
-        {/* Modifiche Giovanni */}
+
         <div className="mt-4 flex gap-3 flex-wrap items-center">
           {showWordButton && (
             <button
@@ -155,23 +188,38 @@ export default function Convo() {
               Interroga AI su "{selectedWord}"
             </button>
           )}
+
+          {/* 🎙️ Pulsante STT */}
+          <button
+            onClick={toggleRecording}
+            className={`px-5 py-2.5 rounded-md text-sm font-medium transition-colors ${
+              isRecording
+                ? "bg-red-600 hover:bg-red-700 text-white"
+                : "bg-purple-600 hover:bg-purple-700 text-white"
+            }`}
+          >
+            {isRecording ? "🛑 Ferma trascrizione" : "🎙️ Avvia trascrizione"}
+          </button>
+
           <button
             onClick={handleSendToAI}
             className="px-5 py-2.5 bg-[#0f1f3d] text-white rounded-md hover:bg-[#1a2f52] transition-colors text-sm font-medium"
           >
             Salva parziale
           </button>
+
           <button
             onClick={handleSave}
             className="px-5 py-2.5 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors text-sm font-medium"
           >
             Termina
           </button>
+
           {saved && <span className="text-emerald-600 self-center text-sm font-medium">Salvato!</span>}
         </div>
       </div>
 
-      {/* Colonna destra */}
+      {/* COLONNA DESTRA */}
       <div className="flex flex-col rounded-lg bg-white p-6 shadow-sm border border-gray-200">
         <h2 className="text-lg font-semibold mb-4 text-[#0f1f3d]">Suggerimenti AI</h2>
         {loading ? (
