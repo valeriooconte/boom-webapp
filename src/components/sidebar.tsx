@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, User, Users, FileText } from "lucide-react"
+import { Home, User, AudioLines, FileText } from "lucide-react"
 
 interface SidebarProps {
   activeItem: string
@@ -11,7 +11,7 @@ export function Sidebar({ activeItem, onItemChange }: SidebarProps) {
   const navItems = [
     { id: "home", icon: Home, label: "Home" },
     { id: "profile", icon: User, label: "Profile" },
-    { id: "users", icon: Users, label: "Users" },
+    { id: "users", icon: AudioLines, label: "Users" },
     { id: "documents", icon: FileText, label: "Documents" },
   ]
 
