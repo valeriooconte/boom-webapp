@@ -2,9 +2,9 @@
 
 This is a web application developed during the **B.Future Challenge** in collaboration with **VAR Group**.
 
-HermIA takes its name from the fusion of *Hermes*, the swift messenger of the Gods in Greek mythology, and *Artificial Intelligence*, as LLM represents the core tool that allows us to generate such "messages" consisting of suggestions for consulting activities and meeting reports, with the aim of making the meeting moment more productive and speeding up the generation and transmission of post-meeting outputs.
+**HermIA** takes its name from the fusion of *Hermes*, the swift messenger of the Gods in Greek mythology, and *Artificial Intelligence*, as LLM represents the core tool that allows us to generate such "messages" consisting of suggestions for consulting activities and meeting reports, with the aim of making the meeting moment more productive and speeding up the generation and transmission of post-meeting outputs.
 
-You can try HermIA at this [**link**](https://boom-webapp.vercel.app/).
+You can try **HermIA** at this [**link**](https://boom-webapp.vercel.app/).
 
 ## Features
 
