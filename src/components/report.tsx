@@ -66,7 +66,7 @@ export function Report() {
             </div>
             <div className="flex-1 text-left">
               <h3 className="font-bold text-[#0f1f3d]">{company.name}</h3>
-              <p className="text-sm text-gray-500">Visualizza report</p>
+              {/* <p className="text-sm text-gray-500">Visualizza report</p> */}
             </div>
           </button>
         ))}

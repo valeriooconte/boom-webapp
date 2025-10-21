@@ -18,13 +18,6 @@ export function Header({ activeSection }: HeaderProps) {
 
       <div className="flex items-center gap-6">
         <button
-          className="flex h-12 w-12 items-center justify-center rounded-full text-[#0f1f3d] transition-colors hover:bg-gray-100"
-          aria-label="Settings"
-        >
-          <Settings className="h-6 w-6" />
-        </button>
-
-        <button
           className="relative flex h-12 w-12 items-center justify-center rounded-full text-[#0f1f3d] transition-colors hover:bg-gray-100"
           aria-label="Notifications"
         >
@@ -36,9 +29,9 @@ export function Header({ activeSection }: HeaderProps) {
 
         <button
           className="flex h-14 w-14 items-center justify-center rounded-full bg-[#0f1f3d] text-white transition-opacity hover:opacity-90"
-          aria-label="User profile"
+          aria-label="Settings"
         >
-          <IdCard className="h-7 w-7" />
+          <Settings className="h-6 w-6" />
         </button>
       </div>
     </header>
