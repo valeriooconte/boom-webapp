@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
     // 🔧 3. Invia l'email
     await transporter.sendMail({
-      from: `"Boom WebApp" <${process.env.GMAIL_USER}>`,
+      from: `"HermIA - VAR Group" <${process.env.GMAIL_USER}>`,
       to,
       subject,
       html: htmlContent,

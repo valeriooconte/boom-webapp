@@ -42,7 +42,7 @@ export function Report() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: emailAddress,
-          subject: "Report Generato",
+          subject: "Report Consulenza",
           htmlContent: emailTemplate(companyName),
           reportText: editedReport,
         }),
