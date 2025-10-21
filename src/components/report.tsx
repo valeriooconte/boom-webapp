@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { X, Send, FileText } from "lucide-react"
+import { emailTemplate } from "../utils/emailTemplate";
 
 interface Company {
   id: string
@@ -28,11 +29,40 @@ export function Report() {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [editedReport, setEditedReport] = useState("")
   const [emailAddress, setEmailAddress] = useState("")
+  const [companyName, setCompanyName] = useState("")
+
+  const [sending, setSending] = useState(false);
+
+  async function handleSendEmail() {
+    setSending(true);
+    try {
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipient: "destinatario@example.com",
+          subject: "📄 Il tuo report Boom WebApp",
+          html: emailTemplate(companyName),
+          reportContent: btoa(editedReport), // converti la stringa in base64
+        }),
+      });
+
+      if (!res.ok) throw new Error("Errore invio email");
+      alert(`Email inviata con successo a: ${emailAddress}`)
+      handleClose()
+    } catch (err) {
+      console.error(err);
+      alert("Errore durante l'invio della mail.");
+    } finally {
+      setSending(false);
+    }
+  }
 
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company)
     setEditedReport(company.report)
     setEmailAddress("")
+    setCompanyName(company.name)
   }
 
   const handleClose = () => {
@@ -41,11 +71,6 @@ export function Report() {
     setEmailAddress("")
   }
 
-  const handleSendEmail = () => {
-    // Here you would implement the actual email sending logic
-    alert(`Email inviata a: ${emailAddress}\n\nReport:\n${editedReport}`)
-    handleClose()
-  }
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -110,11 +135,11 @@ export function Report() {
               {/* Send Button */}
               <button
                 onClick={handleSendEmail}
-                disabled={!emailAddress || !editedReport}
+                disabled={!emailAddress || !editedReport || sending}
                 className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#0f1f3d] px-6 py-4 font-semibold text-white transition-colors hover:bg-[#1a2f5a] disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <Send className="h-5 w-5" />
-                Invia Email
+                {sending ? "Invio in corso..." : "Invia Report via Email"}
               </button>
             </div>
           </div>

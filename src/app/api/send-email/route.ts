@@ -4,13 +4,11 @@ import nodemailer from "nodemailer";
 export async function POST(req: Request) {
   const { recipient, subject, html, reportContent } = await req.json();
 
-  const GMAIL_CLIENT_ID = ""; //process.env.GMAIL_CLIENT_ID
-  const GMAIL_CLIENT_SECRET = ""; //process.env.GMAIL_CLIENT_SECRET
-  const GMAIL_REDIRECT_URI = "";
+  const GMAIL_REDIRECT_URI = "https://boom-webapp.vercel.app/api/auth/callback";
 
   const options = {
-    clientId: GMAIL_CLIENT_ID,
-    clientSecret: GMAIL_CLIENT_SECRET,
+    clientId: process.env.GMAIL_CLIENT_ID,
+    clientSecret: process.env.GMAIL_CLIENT_SECRET,
     redirectUri:  GMAIL_REDIRECT_URI,
   };
 
