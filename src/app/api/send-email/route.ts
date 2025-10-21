@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer"
 import { NextResponse } from "next/server"
-import { Document, Packer, Paragraph, TextRun } from "docx"
+import { Document, Packer } from "docx"
+import { parseReportToDocxParagraphs } from "@/utils/parseReportToDocx";
 
 export async function POST(request: Request) {
   try {
@@ -10,11 +11,7 @@ export async function POST(request: Request) {
     const doc = new Document({
       sections: [
         {
-          children: [
-            new Paragraph({
-              children: [new TextRun(reportText)],
-            }),
-          ],
+          children: parseReportToDocxParagraphs(reportText),
         },
       ],
     })

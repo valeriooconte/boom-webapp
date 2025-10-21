@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { X, Send, FileText } from "lucide-react"
-import { emailTemplate } from "../utils/emailTemplate";
+import { useState, useEffect } from "react"
+import { X, Send, FileText, CheckCircle, AlertCircle } from "lucide-react"
+import { emailTemplate } from "@/utils/emailTemplate"
 
 interface Company {
   id: string
@@ -30,8 +30,8 @@ export function Report() {
   const [editedReport, setEditedReport] = useState("")
   const [emailAddress, setEmailAddress] = useState("")
   const [companyName, setCompanyName] = useState("")
-
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle")
+  const [bannerVisible, setBannerVisible] = useState(false)
 
   async function handleSendEmail() {
     setStatus("sending")
@@ -54,7 +54,18 @@ export function Report() {
       console.error(err)
       setStatus("error")
     }
+
+    // mostra il banner dopo ogni tentativo
+    setBannerVisible(true)
   }
+
+  // nascondi il banner automaticamente dopo 3s
+  useEffect(() => {
+    if (bannerVisible) {
+      const timer = setTimeout(() => setBannerVisible(false), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [bannerVisible])
 
   const handleCompanyClick = (company: Company) => {
     setSelectedCompany(company)
@@ -69,11 +80,12 @@ export function Report() {
     setEmailAddress("")
   }
 
-
   return (
     <div className="mx-auto max-w-6xl">
       <div className="mb-6">
-        <p className="text-gray-600">Seleziona un'azienda per visualizzare e modificare il report</p>
+        <p className="text-gray-600">
+          Seleziona un'azienda per visualizzare e modificare il report
+        </p>
       </div>
 
       {/* Company List */}
@@ -89,7 +101,6 @@ export function Report() {
             </div>
             <div className="flex-1 text-left">
               <h3 className="font-bold text-[#0f1f3d]">{company.name}</h3>
-              {/* <p className="text-sm text-gray-500">Visualizza report</p> */}
             </div>
           </button>
         ))}
@@ -101,16 +112,46 @@ export function Report() {
           <div className="relative w-full max-w-3xl max-h-[90vh] overflow-auto rounded-2xl bg-white shadow-2xl">
             {/* Header */}
             <div className="sticky top-0 flex items-center justify-between border-b bg-white p-6">
-              <h2 className="text-2xl font-bold text-[#0f1f3d]">{selectedCompany.name}</h2>
-              <button onClick={handleClose} className="rounded-full p-2 transition-colors hover:bg-gray-100">
+              <h2 className="text-2xl font-bold text-[#0f1f3d]">
+                {selectedCompany.name}
+              </h2>
+              <button
+                onClick={handleClose}
+                className="rounded-full p-2 transition-colors hover:bg-gray-100"
+              >
                 <X className="h-6 w-6 text-gray-600" />
               </button>
             </div>
 
             {/* Report Content */}
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 relative">
+              {bannerVisible && status !== "idle" && (
+                <div
+                  className={`absolute top-2 right-72 flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium shadow-sm
+                  ${
+                    status === "done"
+                      ? "border-green-500 bg-green-50 text-green-700"
+                      : "border-red-500 bg-red-50 text-red-700"
+                  }`}
+                >
+                  {status === "done" ? (
+                    <>
+                      <CheckCircle className="h-4 w-4" />
+                      <span>Email inviata con successo!</span>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="h-4 w-4" />
+                      <span>Errore durante l'invio.</span>
+                    </>
+                  )}
+                </div>
+              )}
+
               <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700">Report</label>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Report
+                </label>
                 <textarea
                   value={editedReport}
                   onChange={(e) => setEditedReport(e.target.value)}
@@ -120,7 +161,9 @@ export function Report() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-gray-700">Indirizzo Email</label>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Indirizzo Email
+                </label>
                 <input
                   type="email"
                   value={emailAddress}
@@ -130,7 +173,6 @@ export function Report() {
                 />
               </div>
 
-              {/* Send Button */}
               <button
                 onClick={handleSendEmail}
                 disabled={!emailAddress || !editedReport || status === "sending"}
