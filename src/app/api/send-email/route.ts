@@ -1,61 +1,39 @@
-import { google } from "googleapis";
-import nodemailer from "nodemailer";
+import nodemailer from "nodemailer"
+import { NextResponse } from "next/server"
 
-export async function POST(req: Request) {
-  const { recipient, subject, html, reportContent } = await req.json();
-
-  const GMAIL_REDIRECT_URI = "https://boom-webapp.vercel.app/api/auth/callback";
-
-  const options = {
-    clientId: process.env.GMAIL_CLIENT_ID,
-    clientSecret: process.env.GMAIL_CLIENT_SECRET,
-    redirectUri:  GMAIL_REDIRECT_URI,
-  };
-
-  console.log(options);
-
+export async function POST(request: Request) {
   try {
-    const oAuth2Client = new google.auth.OAuth2(options);
+    const { to, subject, htmlContent, docxContentBase64 } = await request.json()
 
-    oAuth2Client.setCredentials({
-      refresh_token: process.env.GMAIL_REFRESH_TOKEN,
-    });
-    const accessToken = await oAuth2Client.getAccessToken();
-
+    // Crea il transporter usando App Password
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        type: "OAuth2",
         user: process.env.GMAIL_USER,
-        clientId: process.env.GMAIL_CLIENT_ID,
-        clientSecret: process.env.GMAIL_CLIENT_SECRET,
-        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-        accessToken: accessToken.token ?? undefined,
+        pass: process.env.GMAIL_APP_PASSWORD,
       },
-    });
+    })
 
-    // Crea un file docx in base64
-    const buffer = Buffer.from(reportContent, "utf-8");
-
-    await transporter.sendMail({
+    // Configura il messaggio
+    const mailOptions = {
       from: `"Boom WebApp" <${process.env.GMAIL_USER}>`,
-      to: recipient,
+      to,
       subject,
-      html,
+      html: htmlContent,
       attachments: [
         {
           filename: "report.docx",
-          content: buffer,
+          content: Buffer.from(docxContentBase64, "base64"),
           encoding: "base64",
-          contentType:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         },
       ],
-    });
+    }
 
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
-  } catch (err: any) {
-    console.error(err);
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    await transporter.sendMail(mailOptions)
+
+    return NextResponse.json({ success: true, message: "Email inviata con successo!" })
+  } catch (error: any) {
+    console.error("Errore invio email:", error)
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }
 }

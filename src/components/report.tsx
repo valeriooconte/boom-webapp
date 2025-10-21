@@ -31,30 +31,31 @@ export function Report() {
   const [emailAddress, setEmailAddress] = useState("")
   const [companyName, setCompanyName] = useState("")
 
-  const [sending, setSending] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle")
 
   async function handleSendEmail() {
-    setSending(true);
+    setStatus("sending")
+
     try {
+      // Converte la stringa report in base64 per allegarla
+      const docxBase64 = btoa(encodeURIComponent(editedReport))
+
       const res = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          recipient: "destinatario@example.com",
-          subject: "📄 Il tuo report Boom WebApp",
-          html: emailTemplate(companyName),
-          reportContent: btoa(editedReport), // converti la stringa in base64
+          to: emailAddress,
+          subject: "Report Generato",
+          htmlContent: emailTemplate(companyName),
+          docxContentBase64: docxBase64,
         }),
-      });
+      })
 
-      if (!res.ok) throw new Error("Errore invio email");
-      alert(`Email inviata con successo a: ${emailAddress}`)
-      handleClose()
+      if (res.ok) setStatus("done")
+      else setStatus("error")
     } catch (err) {
-      console.error(err);
-      alert("Errore durante l'invio della mail.");
-    } finally {
-      setSending(false);
+      console.error(err)
+      setStatus("error")
     }
   }
 
@@ -135,11 +136,11 @@ export function Report() {
               {/* Send Button */}
               <button
                 onClick={handleSendEmail}
-                disabled={!emailAddress || !editedReport || sending}
+                disabled={!emailAddress || !editedReport || status === "sending"}
                 className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#0f1f3d] px-6 py-4 font-semibold text-white transition-colors hover:bg-[#1a2f5a] disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <Send className="h-5 w-5" />
-                {sending ? "Invio in corso..." : "Invia Report via Email"}
+                {status === "sending" ? "Invio in corso..." : "Invia Report via Email"}
               </button>
             </div>
           </div>
