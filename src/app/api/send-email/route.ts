@@ -12,6 +12,8 @@ export async function POST(req: Request) {
     redirectUri:  GMAIL_REDIRECT_URI,
   };
 
+  console.log(options);
+
   try {
     const oAuth2Client = new google.auth.OAuth2(options);
 
