@@ -4,7 +4,9 @@ This is a web application developed during the **B.Future Challenge** in collabo
 
 HermIA takes its name from the fusion of *Hermes*, the swift messenger of the Gods in Greek mythology, and *Artificial Intelligence*, as LLM represents the core tool that allows us to generate such "messages" consisting of suggestions for consulting activities and meeting reports, with the aim of making the meeting moment more productive and speeding up the generation and transmission of post-meeting outputs.
 
-## Core features
+You can try HermIA at this [**link**](https://boom-webapp.vercel.app/).
+
+## Features
 
 HermIA leverages **real-time analysis** of the conversation between customer and consultant, providing feedback and suggestions obtained through interaction with an **AI agent** specialized in:
 - Key words identification
@@ -12,3 +14,9 @@ HermIA leverages **real-time analysis** of the conversation between customer and
 - Information extraction starting from mentioned technologies
 - Creation of comprehensive reports to summarize the meeting
 
+## Technologies
+
+The development of this platform was based on three key technologies:
+- **Next.js**: web-app client side and server-side implementation
+- **n8n**: AI agent's workflows realization
+- **Vercel**: web application build and deployment
