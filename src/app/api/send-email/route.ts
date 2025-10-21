@@ -1,11 +1,28 @@
 import nodemailer from "nodemailer"
 import { NextResponse } from "next/server"
+import { Document, Packer, Paragraph, TextRun } from "docx"
 
 export async function POST(request: Request) {
   try {
-    const { to, subject, htmlContent, docxContentBase64 } = await request.json()
+    const { to, subject, htmlContent, reportText } = await request.json()
 
-    // Crea il transporter usando App Password
+    // 🔧 1. Crea file DOCX dinamicamente
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            new Paragraph({
+              children: [new TextRun(reportText)],
+            }),
+          ],
+        },
+      ],
+    })
+
+    const buffer = await Packer.toBuffer(doc)
+    const base64 = buffer.toString("base64")
+
+    // 🔧 2. Crea transporter Nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -14,8 +31,8 @@ export async function POST(request: Request) {
       },
     })
 
-    // Configura il messaggio
-    const mailOptions = {
+    // 🔧 3. Invia l'email
+    await transporter.sendMail({
       from: `"Boom WebApp" <${process.env.GMAIL_USER}>`,
       to,
       subject,
@@ -23,17 +40,15 @@ export async function POST(request: Request) {
       attachments: [
         {
           filename: "report.docx",
-          content: Buffer.from(docxContentBase64, "base64"),
+          content: base64,
           encoding: "base64",
         },
       ],
-    }
+    })
 
-    await transporter.sendMail(mailOptions)
-
-    return NextResponse.json({ success: true, message: "Email inviata con successo!" })
+    return NextResponse.json({ success: true })
   } catch (error: any) {
     console.error("Errore invio email:", error)
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

@@ -37,9 +37,6 @@ export function Report() {
     setStatus("sending")
 
     try {
-      // Converte la stringa report in base64 per allegarla
-      const docxBase64 = btoa(encodeURIComponent(editedReport))
-
       const res = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -47,7 +44,7 @@ export function Report() {
           to: emailAddress,
           subject: "Report Generato",
           htmlContent: emailTemplate(companyName),
-          docxContentBase64: docxBase64,
+          reportText: editedReport,
         }),
       })
 
