@@ -36,7 +36,8 @@ export default function Convo() {
   Conversazione di contesto:
   `
 
-  const AGENT_URL = process.env.N8N_URL
+  // NB: sostituire quando l'agente verrà attivato
+  const AGENT_URL = "https://challengecrif.app.n8n.cloud/webhook-test"
 
   const handleSave = () => {
     setSaved(true)
