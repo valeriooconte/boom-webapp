@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const { to, subject, htmlContent, reportText } = await request.json()
 
-    // 🔧 1. Crea file DOCX dinamicamente
+    // Crea file .docx dinamicamente
     const doc = new Document({
       sections: [
         {
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     const buffer = await Packer.toBuffer(doc)
     const base64 = buffer.toString("base64")
 
-    // 🔧 2. Crea transporter Nodemailer
+    // Crea transporter Nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       },
     })
 
-    // 🔧 3. Invia l'email
+    // Invia l'email
     await transporter.sendMail({
       from: `"HermIA - VAR Group" <${process.env.GMAIL_USER}>`,
       to,

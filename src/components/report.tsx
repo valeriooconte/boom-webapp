@@ -55,11 +55,11 @@ export function Report() {
       setStatus("error")
     }
 
-    // mostra il banner dopo ogni tentativo
+    // Mostra il banner dopo ogni tentativo
     setBannerVisible(true)
   }
 
-  // nascondi il banner automaticamente dopo 3s
+  // Nascondi il banner automaticamente dopo 3s
   useEffect(() => {
     if (bannerVisible) {
       const timer = setTimeout(() => setBannerVisible(false), 3000)
@@ -88,7 +88,7 @@ export function Report() {
         </p>
       </div>
 
-      {/* Company List */}
+      {/* Elenco Clienti */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {companies.map((company) => (
           <button
@@ -106,7 +106,7 @@ export function Report() {
         ))}
       </div>
 
-      {/* Overlay Modal */}
+      {/* Modale in overlay */}
       {selectedCompany && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="relative w-full max-w-3xl max-h-[90vh] overflow-auto rounded-2xl bg-white shadow-2xl">
@@ -123,7 +123,7 @@ export function Report() {
               </button>
             </div>
 
-            {/* Report Content */}
+            {/* Sezione letttura e modifica Report */}
             <div className="p-6 space-y-6 relative">
               {bannerVisible && status !== "idle" && (
                 <div

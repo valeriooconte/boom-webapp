@@ -17,6 +17,6 @@ HermIA leverages **real-time analysis** of the conversation between customer and
 ## Technologies
 
 The development of this platform was based on three key technologies:
+- **n8n**: AI workflows realization
 - **Next.js**: web-app client side and server-side implementation
-- **n8n**: AI agent's workflows realization
 - **Vercel**: web application build and deployment

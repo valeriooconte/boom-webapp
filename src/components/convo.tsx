@@ -4,18 +4,18 @@ import ReactMarkdown from "react-markdown"
 
 export default function Convo() {
   const [transcript, setTranscript] = useState("")
-  const [lastSentTranscript, setLastSentTranscript] = useState("") // 👈 nuovo stato
+  const [lastSentTranscript, setLastSentTranscript] = useState("")
   const [suggestions, setSuggestions] = useState("")
+  const [selectedWord, setSelectedWord] = useState("")
+
+  const [showWordButton, setShowWordButton] = useState(false)
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [isRecording, setIsRecording] = useState(false) // 👈 per gestire stato STT
+  const [isRecording, setIsRecording] = useState(false)
+
   const recognitionRef = useRef<typeof SpeechRecognition | null>(null)
 
-  // Modifiche Giovanni
-  const [selectedWord, setSelectedWord] = useState("")
-  const [showWordButton, setShowWordButton] = useState(false)
-
-  const suggestion_prompt = `
+  const suggestionPrompt = `
   Agisci come un assistente cognitivo per consulenti aziendali durante colloqui con clienti.
 
   Leggi il seguente estratto della conversazione e:
@@ -23,25 +23,31 @@ export default function Convo() {
   2. Per ciascuno, genera una breve *risposta intelligente* o *spunto operativo*.
   3. Chiudi con un micro-riassunto se la conversazione è lunga.
 
-  Conversazione:
-  {chunk}
-
-  Risposte intelligenti:
+  Estratto di conversazione da leggere e analizzare:
   `
 
-  const username = "challengecrif"
+  const wordQueryPrompt = `
+  In base alla conversazione finora, fornisci informazioni (max 6 righe) su "${selectedWord}" nel contesto consulenziale:
+  - Definizione
+  - Applicazioni pratiche
+  - Tool o tecnologie correlate
+  - Suggerimenti operativi
+
+  Conversazione di contesto:
+  `
+
+  const AGENT_URL = process.env.N8N_URL
 
   const handleSave = () => {
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
 
-  // ✅ SOLO le parti nuove della conversazione
   const handleSendToAI = async () => {
     setLoading(true)
     setSuggestions("")
 
-    // prendi solo la parte nuova
+    // Considera solo la parte nuova
     const newChunk = transcript.replace(lastSentTranscript, "").trim()
     if (!newChunk) {
       setSuggestions("Nessuna nuova parte da inviare.")
@@ -50,18 +56,18 @@ export default function Convo() {
     }
 
     try {
-      const res = await fetch("https://" + username + ".app.n8n.cloud/webhook-test/audio-input", {
+      const res = await fetch(AGENT_URL + "/audio-input", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: suggestion_prompt,
+          prompt: suggestionPrompt,
           conversation: newChunk,
         }),
       })
 
       const data = await res.json()
       setSuggestions(data.message.content || "Nessuna risposta dall'AI")
-      setLastSentTranscript(transcript) // 👈 aggiorna l’ultimo punto inviato
+      setLastSentTranscript(transcript)
     } catch (err) {
       console.error(err)
       setSuggestions("Errore: impossibile contattare l'agente AI.")
@@ -87,19 +93,8 @@ export default function Convo() {
     setLoading(true)
     setSuggestions("")
 
-    const wordQueryPrompt = `
-    In base alla conversazione finora, fornisci informazioni (max 6 righe) su "${selectedWord}" nel contesto consulenziale:
-    - Definizione
-    - Applicazioni pratiche
-    - Tool o tecnologie correlate
-    - Suggerimenti operativi
-
-    Conversazione di contesto:
-    ${transcript}
-    `
-
     try {
-      const res = await fetch("https://" + username + ".app.n8n.cloud/webhook-test/audio-input", {
+      const res = await fetch(AGENT_URL + "/audio-input", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -118,7 +113,7 @@ export default function Convo() {
     }
   }
 
-  // 🎙️ FUNZIONE: Speech-to-Text tramite Web Speech API
+  // Speech-to-Text tramite Web Speech API
   const toggleRecording = () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
       alert("API SpeechRecognition non supportata su questo browser.")
@@ -189,7 +184,7 @@ export default function Convo() {
             </button>
           )}
 
-          {/* 🎙️ Pulsante STT */}
+          {/* Pulsante Speech-to-Text */}
           <button
             onClick={toggleRecording}
             className={`px-5 py-2.5 rounded-md text-sm font-medium transition-colors ${

@@ -57,18 +57,15 @@ export function Dashboard() {
     setTasks(tasks.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)))
   }
 
-  // Generate calendar days for November 2025
   const generateCalendarDays = () => {
     const daysInMonth = 30
-    const firstDayOfWeek = 6 // November 1, 2025 is a Saturday (0=Sun, 6=Sat)
+    const firstDayOfWeek = 6
     const days = []
 
-    // Add empty cells for days before the month starts
     for (let i = 0; i < firstDayOfWeek; i++) {
       days.push(null)
     }
 
-    // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(day)
     }
@@ -101,7 +98,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Calendar */}
+      {/* Calendario */}
       {/*
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-4">

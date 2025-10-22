@@ -64,7 +64,7 @@ export function Clienti() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      {/* Search and New Client Button */}
+      {/* Ricerca + Pulsante "Nuovo Cliente" */}
       <div className="mb-8 flex items-center gap-4 rounded-2xl bg-white p-6 shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-400" />
@@ -90,14 +90,14 @@ export function Clienti() {
         <div></div> {/* colonna destra vuota per l’icona folder */}
       </div>
 
-      {/* Client List */}
+      {/* Lista Clienti */}
       <div className="space-y-4">
         {filteredClients.map((client) => (
           <div
             key={client.id}
             className="grid grid-cols-[1fr_80px_80px] items-center rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
           >
-            {/* Left: Avatar and Client Info */}
+            {/* Avatar e Info Clienti */}
             <div className="flex items-center gap-4">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#0f1f3d]">
                 <UserCircle className="h-10 w-10 text-white" />
@@ -108,12 +108,12 @@ export function Clienti() {
               </div>
             </div>
 
-            {/* Center: Status Icon */}
+            {/* Icona di Stato */}
             <div className="flex justify-center">
               {getStatusIcon(client.status)}
             </div>
 
-            {/* Right: Folder Icon */}
+            {/* Icona Documenti Cliente */}
             <button className="flex justify-center transition-transform hover:scale-110">
               <FolderSearch className="h-12 w-12 text-[#0f1f3d]" />
             </button>
