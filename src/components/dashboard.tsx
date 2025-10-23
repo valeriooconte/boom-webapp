@@ -1,4 +1,4 @@
-t"use client"
+"use client"
 
 import { useState } from "react"
 import { Mail, Star } from "lucide-react"
