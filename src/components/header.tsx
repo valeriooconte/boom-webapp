@@ -1,4 +1,5 @@
-import { Settings, Bell, Award as IdCard } from "lucide-react"
+import Image from "next/image"
+import { Settings, Bell } from "lucide-react"
 
 interface HeaderProps {
   activeSection: string
@@ -13,9 +14,15 @@ const sectionNames: Record<string, string> = {
 
 export function Header({ activeSection }: HeaderProps) {
   return (
-    <header className="flex h-[120px] items-center justify-between bg-white px-8">
-      <h1 className="text-3xl font-bold text-[#0f1f3d]">{sectionNames[activeSection] || "Dashboard"}</h1>
+    <header className="flex h-[120px] items-center justify-between bg-white px-8 shadow-sm">
+      {/* Logo + Titolo */}
+      <div className="flex items-center gap-4">
+        <h1 className="text-3xl font-bold text-[#0f1f3d]">
+          {sectionNames[activeSection] || "Dashboard"}
+        </h1>
+      </div>
 
+      {/* Icone a destra */}
       <div className="flex items-center gap-6">
         <button
           className="relative flex h-12 w-12 items-center justify-center rounded-full text-[#0f1f3d] transition-colors hover:bg-gray-100"
