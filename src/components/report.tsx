@@ -24,6 +24,12 @@ export function Report() {
       report:
         "Report dettagliato per VAR\n\nSituazione attuale:\n- Primo contatto stabilito\n- Richiesta preventivo in corso\n- Budget disponibile: medio-alto\n\nProssimi passi:\nProgrammare demo del prodotto.",
     },
+    {
+      id: "3",
+      name: "Elettromec",
+      report:
+        "Report dettagliato per VAR\n\nSituazione attuale:\n- Primo contatto stabilito\n- Richiesta preventivo in corso\n- Budget disponibile: medio-alto\n\nProssimi passi:\nProgrammare demo del prodotto.",
+    },
   ])
 
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)

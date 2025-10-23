@@ -1,4 +1,4 @@
-"use client"
+t"use client"
 
 import { useState } from "react"
 import { Mail, Star } from "lucide-react"
@@ -20,7 +20,7 @@ export function Dashboard() {
       type: "email",
       title: "Invia Email Step-1",
       name: "Mario Rossi",
-      company: "CRIF",
+      company: "Elettromec",
       date: "27/10/25",
       completed: false,
     },
@@ -29,7 +29,7 @@ export function Dashboard() {
       type: "meeting",
       title: "Incontro programmato con Mario Rossi",
       name: "Mario Rossi",
-      company: "CRIF",
+      company: "Elettromec",
       date: "6/11/25",
       completed: false,
     },
@@ -38,7 +38,7 @@ export function Dashboard() {
       type: "email",
       title: "Invia Email Step-2",
       name: "Mario Rossi",
-      company: "CRIF",
+      company: "Elettromec",
       date: "6/11/25",
       completed: false,
     },

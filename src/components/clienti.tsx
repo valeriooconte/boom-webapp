@@ -15,7 +15,7 @@ export function Clienti() {
   const [clients] = useState<Client[]>([
     {
       id: "1",
-      company: "CRIF",
+      company: "Elettromec",
       name: "Mario Rossi",
       status: "active",
     },
