@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import Convo from "@/components/convo"
+import Convo from "@/components/convo_prova"
 
 import { Sidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
