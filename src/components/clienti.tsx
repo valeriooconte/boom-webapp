@@ -76,7 +76,7 @@ export function Clienti() {
             className="w-full rounded-full border-2 border-gray-900 py-3 pl-14 pr-4 text-base focus:outline-none"
           />
         </div>
-        <button className="whitespace-nowrap rounded-full bg-[#0f1f3d] px-8 py-3 font-semibold text-white transition-colors hover:bg-[#1a2f5a]">
+        <button className="whitespace-nowrap rounded-full bg-[#0f1f3d] px-8 py-3 font-semibold text-white transition-colors hover:bg-[#1a2f5a] cursor-pointer">
           Nuovo Cliente
         </button>
       </div>

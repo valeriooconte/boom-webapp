@@ -4,34 +4,9 @@ import { useState, useEffect } from "react"
 import { X, Send, FileText, CheckCircle, AlertCircle } from "lucide-react"
 import { emailTemplate } from "@/utils/emailTemplate"
 
-interface Company {
-  id: string
-  name: string
-  report: string
-}
+import { Company } from "@/app/page"
 
-export function Report() {
-  const [companies] = useState<Company[]>([
-    {
-      id: "1",
-      name: "CRIF",
-      report:
-        "Report dettagliato per CRIF\n\nPunti chiave:\n- Incontro produttivo del 15/10/2025\n- Interesse per i nostri servizi\n- Follow-up previsto per novembre\n\nNote aggiuntive:\nIl cliente ha mostrato particolare interesse per le soluzioni enterprise.",
-    },
-    {
-      id: "2",
-      name: "VAR",
-      report:
-        "Report dettagliato per VAR\n\nSituazione attuale:\n- Primo contatto stabilito\n- Richiesta preventivo in corso\n- Budget disponibile: medio-alto\n\nProssimi passi:\nProgrammare demo del prodotto.",
-    },
-    {
-      id: "3",
-      name: "Elettromec",
-      report:
-        "Report dettagliato per VAR\n\nSituazione attuale:\n- Primo contatto stabilito\n- Richiesta preventivo in corso\n- Budget disponibile: medio-alto\n\nProssimi passi:\nProgrammare demo del prodotto.",
-    },
-  ])
-
+export function Report({ companies }: { companies: Company[] }) {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
   const [editedReport, setEditedReport] = useState("")
   const [emailAddress, setEmailAddress] = useState("")

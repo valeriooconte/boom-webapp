@@ -12,7 +12,8 @@ import { Paragraph, TextRun, HeadingLevel } from "docx";
  *  - \n → nuova riga
  */
 export function parseReportToDocxParagraphs(reportText: string): Paragraph[] {
-  const lines = reportText.split("\n");
+  const text = reportText.replace("---", "");
+  const lines = text.split("\n");
   const paragraphs: Paragraph[] = [];
 
   for (const rawLine of lines) {
@@ -28,7 +29,7 @@ export function parseReportToDocxParagraphs(reportText: string): Paragraph[] {
       paragraphs.push(
         new Paragraph({
           text: line.slice(4),
-          heading: HeadingLevel.HEADING_1,
+          heading: HeadingLevel.HEADING_3,
         })
       );
       continue;
@@ -48,7 +49,7 @@ export function parseReportToDocxParagraphs(reportText: string): Paragraph[] {
       paragraphs.push(
         new Paragraph({
           text: line.slice(2),
-          heading: HeadingLevel.HEADING_3,
+          heading: HeadingLevel.HEADING_1,
         })
       );
       continue;

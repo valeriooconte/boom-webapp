@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Consulente AI",
-  description: "BOOM Innovation Challenge",
+  title: "HermIA - Var Group",
+  description: "B.Future Challenge",
 };
 
 export default function RootLayout({
