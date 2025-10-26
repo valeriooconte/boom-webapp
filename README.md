@@ -11,12 +11,12 @@ You can try **HermIA** at this [**link**](https://boom-webapp.vercel.app/).
 HermIA leverages **real-time analysis** of the conversation between customer and consultant, providing feedback and suggestions obtained through interaction with an **AI agent** specialized in:
 - Key words identification
 - Customer sentiment analysis 
-- Information extraction starting from mentioned technologies
-- Creation of comprehensive reports to summarize the meeting
+- Information extraction
+- Reports creation
 
 ## Technologies
 
 The development of this platform was based on three key technologies:
 - **n8n**: AI workflows realization
-- **Next.js**: web-app client side and server-side implementation
-- **Vercel**: web-app build and deployment
+- **Next.js**: client-side and server-side web app implementation
+- **Vercel**: web app build and deployment
