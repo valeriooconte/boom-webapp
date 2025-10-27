@@ -18,7 +18,6 @@ HermIA leverages **real-time analysis** of the conversation between customer and
 
 The development of this platform was based on three key technologies:
 - **n8n**: AI workflows realization
-<<<<<<< HEAD
 - **Next.js**: client-side and server-side web app implementation
 - **Vercel**: web app build and deployment
 
@@ -34,7 +33,3 @@ Currently *Dashboard* and *Clienti* sections are mockups. The main feature can b
 You will se the real-time transcription in the left window, where you can also edit it, and all the AI-generated information in the right window of the screen.
 
 At the end, you can go to the **Report** section, click on the name of the customer company, read and edit the generated report in the *Report* text area, and finally you can try use the **Invia Report via Email** button to send the report to the customer e-mail address, to specify in the *Indirizzo Email* text field.
-=======
-- **Next.js**: client-side and server-side web app implementation
-- **Vercel**: web app build and deployment
->>>>>>> 6b67a4a9e55523bc44629d0952726242f4eeb02f
