@@ -68,8 +68,10 @@ export default function Convo({ onSave }: { onSave: (c: Omit<Company, "id">) => 
 
       onSave({
         name: companyName,
-        report: data.message.content,
+        report: data.output.content[0].text,//data.message.content,
       })
+
+      
 
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
@@ -109,7 +111,7 @@ export default function Convo({ onSave }: { onSave: (c: Omit<Company, "id">) => 
         ...prev,
         {
           timestamp: new Date().toLocaleTimeString(),
-          content: data.message.content || "Nessuna risposta dall'AI",
+          content: data.output.content[0].text || "Nessuna risposta dall'AI",
           type: "partial",
         },
       ])
@@ -156,7 +158,7 @@ export default function Convo({ onSave }: { onSave: (c: Omit<Company, "id">) => 
         ...prev,
         {
           timestamp: new Date().toLocaleTimeString(),
-          content: data.message.content || "Nessuna risposta dall'AI",
+          content: data.output.content[0].text || "Nessuna risposta dall'AI",
           type: "word",
         },
       ])
