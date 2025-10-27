@@ -20,3 +20,16 @@ The development of this platform was based on three key technologies:
 - **n8n**: AI workflows realization
 - **Next.js**: web-app client side and server-side implementation
 - **Vercel**: web-app build and deployment
+
+## How to use
+
+Currently *Dashboard* and *Clienti* sections are mockups. The main feature can be tried in the **Incontro** section, where you can:
+- Set the customer company name in the *Nome azienda* text field
+- Start and pause real-time transcription (using the *Regista/Pausa* button)
+- Get tips and insights into the conversation so far from the AI agent (using the *Suggerimento* button)
+- Select text in the conversation text area and get information about it through the AI agent (using the *Interroga AI su "..."* button)
+- End the meeting, sending the transcription and all the information collected to another AI workflow in order to generate the final meeting report (using the *Termina*) button
+
+You will se the real-time transcription in the left window, where you can also edit it, and all the AI-generated information in the right window of the screen.
+
+At the end, you can go to the **Report** section, click on the name of the customer company, read and edit the generated report in the *Report* text area, and finally you can try use the **Invia Report via Email** button to send the report to the customer e-mail address, to specify in the *Indirizzo Email* text field.
