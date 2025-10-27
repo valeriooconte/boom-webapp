@@ -48,7 +48,7 @@ export default function Convo({ onSave }: { onSave: (c: Omit<Company, "id">) => 
   `
 
   // NB: sostituire quando l'agente verrà attivato
-  const AGENT_URL = "https://challengecrif.app.n8n.cloud/webhook-test"
+  const AGENT_URL = "https://challengecrif.app.n8n.cloud/webhook"
 
   const handleSave = async () => {
 
